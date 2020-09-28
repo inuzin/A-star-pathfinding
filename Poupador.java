@@ -91,9 +91,23 @@ public class Poupador extends ProgramaPoupador {
 					RunningAway = true;
 					Node start = new Node(2,2);
 					Node end = new Node(Math.abs(x - 4),Math.abs(y - 4));
+					System.out.println("OI");
+					if(map[Math.abs(x - 4)][Math.abs(y - 4)] != 1)
+					{
+					end = new Node(Math.abs(x - 4),Math.abs(y - 4));
+					}
+					else if(map[Math.abs(x - 4)][y] != 1)
+					{
+					end = new Node(Math.abs(x - 4),Math.abs(y));	
+					}
+					else if(map[x][Math.abs(y - 4)] != 1)
+					{
+					end = new Node(Math.abs(x),Math.abs(y - 4));	
+					}
 					
+					System.out.println("O PROBLEMA E O CALCULO?");
 					Astar(start, end, map);
-					
+					System.out.println("O PROBLEMA E O NODE FINAL?");
 					MovePoupador(Path.lastElement());
 				}
 				
