@@ -12,7 +12,10 @@ public class Poupador extends ProgramaPoupador {
 	int direcao = 1;
 	int movimento = 0;
 	int round = 0;
+	int posX = 0;
+	int posY = 0;
 	int runfromenemy = 0;
+	int holdvarx1, holdvarx2, holdvary1, holdvary2 = 0;
 	Boolean Explore = false;
 	Boolean FoundCoin = false;
 	Boolean FoundBanco = false;
@@ -69,8 +72,26 @@ public class Poupador extends ProgramaPoupador {
 		
 		//MovePoupador(Path.lastElement());
 		
-		
+		AutoUnstuck();
+		posX = (int)sensor.getPosicao().getX();
+		posY = (int)sensor.getPosicao().getY();
+		round += 1;
 		return (int) (movimento);
+	}
+	
+	public void AutoUnstuck()
+	{
+		if(round >= 1)
+		{
+		if(posX == (int)sensor.getPosicao().getX())	
+		{
+			if(posY == (int)sensor.getPosicao().getY())	
+			{
+				movimento = (int)(Math.random() * 5);
+				round = 0;
+			}
+		}
+		}
 	}
 	
 	public void Scan()
@@ -81,87 +102,6 @@ public class Poupador extends ProgramaPoupador {
 		RunningAway = false;
 		Explore = false;
 		FoundBanco = false;
-		
-		for(int y = 0; y <= 30; y++)
-		{
-			for(int x = 0; x <= 30; x++)
-			{
-				//world[x][y] = 0;
-				/*
-				world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY()] = 1;
-				
-				if(RunningAway == false)
-				{
-					if(FoundCoin == false)
-					{
-						if(map[x][y] == 1)
-						{
-							Explore = true;
-							Node start = new Node(2,2);
-							Node end = new Node(Math.abs(x - 4),Math.abs(y - 4));
-							System.out.println("OI");
-							if(map[Math.abs(x - 4)][Math.abs(y - 4)] != 1)
-							{
-							end = new Node(Math.abs(x - 4),Math.abs(y - 4));
-							}
-							else if(map[Math.abs(x - 4)][y] != 1)
-							{
-							end = new Node(Math.abs(x - 4),Math.abs(y));	
-							}
-							else if(map[x][Math.abs(y - 4)] != 1)
-							{
-							end = new Node(Math.abs(x),Math.abs(y - 4));	
-							}
-							
-							System.out.println("O PROBLEMA E O CALCULO?");
-							Astar(start, end, map);
-							System.out.println("O PROBLEMA E O NODE FINAL?");
-							MovePoupador(Path.lastElement());
-						}	
-					}
-				}
-				
-				//movimento = (int)(Math.random() * 5);
-				*/
-				/*
-				if((int)sensor.getPosicao().getX() != 29 && (int)sensor.getPosicao().getY() != 29)
-				{
-					if((int)sensor.getPosicao().getX() != 0 &&(int)sensor.getPosicao().getY() != 0)
-					{
-				if(world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != 1)
-				{
-					movimento = (int)(Math.random() * 5);	
-				}
-				else if(world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != 1)
-				{
-					movimento = (int)(Math.random() * 4);
-				}
-				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != 1)
-				{
-					movimento = (int)(Math.random() * 3);
-				}
-				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != 1)
-				{
-					movimento = (int)(Math.random() * 2);	
-				}
-				else
-				{
-					movimento = (int)(Math.random() * 5);	
-				}
-					}
-					else
-					{
-						movimento = (int)(Math.random() * 5);	
-					}
-				}
-				else
-				{
-					movimento = (int)(Math.random() * 5);	
-				}
-				*/
-				
-			}
-		}
 			
 		
 		for(int y = 0; y <= 4; y++)
@@ -173,6 +113,15 @@ public class Poupador extends ProgramaPoupador {
 				{
 				//if(sensor.getVisaoIdentificacao()[tile] == 4)
 				//System.out.println("[" + x + "," + y + "] - " + tile + " - " + sensor.getVisaoIdentificacao()[tile]);
+					
+				if((int)sensor.getPosicao().getX() != 0)	
+				holdvarx1 = map[1][2];
+				if((int)sensor.getPosicao().getX() != 29)
+				holdvarx2 = map[3][2];
+				if((int)sensor.getPosicao().getY() != 0)
+				holdvary1 = map[2][1];
+				if((int)sensor.getPosicao().getY() != 29)
+				holdvary2 = map[2][3];			
 				
 				map[x][y] = sensor.getVisaoIdentificacao()[tile];	
 				tile += 1;
@@ -222,7 +171,9 @@ public class Poupador extends ProgramaPoupador {
 					}
 					else
 					{
-						movimento = (int)(Math.random() * 5);	
+					System.out.println("CAMINHO IMPOSSIVEL------------------------------------------------------------------------------");
+					movimento = (int)(Math.random() * 5);
+					return;
 					}
 					
 					Astar(start, end, map);
@@ -258,6 +209,100 @@ public class Poupador extends ProgramaPoupador {
 			}
 		}
 		
+		for(int y = 0; y <= 30; y++)
+		{
+			for(int x = 0; x <= 30; x++)
+			{
+				//world[x][y] = 0;
+				
+				world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY()] = 2;
+				if(holdvarx1 != 0 && (int)sensor.getPosicao().getX() != 0)
+				world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] = holdvarx1;
+				if(holdvarx2 != 0 && (int)sensor.getPosicao().getX() != 29)
+				world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] = holdvarx2;
+				if(holdvary1 != 0 && (int)sensor.getPosicao().getY() != 0)
+				world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] = holdvary1;
+				if(holdvary2 != 0 && (int)sensor.getPosicao().getY() != 29)
+				world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] = holdvary2;
+				
+				if(RunningAway == false)
+				{
+					if(FoundCoin == false)
+					{
+						if(FoundBanco == false)
+						{
+							Explore = true;
+						
+							
+						if(world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != 1 && world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != -1 && world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != 2)
+						{
+							MoveRight();
+						}
+						else if((int)sensor.getPosicao().getX() != 0 && world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != 1 && world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != -1 && world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != 2)
+						{
+							
+							MoveLeft();
+						}
+						else if((int)sensor.getPosicao().getY() != 0 && world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != 1 && world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != -1 && world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != 2)
+						{
+							
+							MoveUp();
+						}
+						else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != 1 && world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != -1 && world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != 2)
+						{
+							MoveDown();
+						}
+						else
+						{
+							movimento = (int)(Math.random() * 5);	
+						}
+						}
+						
+					}
+				}
+				
+				//movimento = (int)(Math.random() * 5);
+				
+				/*
+				if((int)sensor.getPosicao().getX() != 29 && (int)sensor.getPosicao().getY() != 29)
+				{
+					if((int)sensor.getPosicao().getX() != 0 &&(int)sensor.getPosicao().getY() != 0)
+					{
+				if(world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != 1)
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+				else if(world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != 1)
+				{
+					movimento = (int)(Math.random() * 4);
+				}
+				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != 1)
+				{
+					movimento = (int)(Math.random() * 3);
+				}
+				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != 1)
+				{
+					movimento = (int)(Math.random() * 2);	
+				}
+				else
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+					}
+					else
+					{
+						movimento = (int)(Math.random() * 5);	
+					}
+				}
+				else
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+				*/
+				
+			}
+		}
+		
 		
 		if(FoundCoin == false)
 		{
@@ -274,6 +319,19 @@ public class Poupador extends ProgramaPoupador {
 		{
 			//movimento = 0;
 			System.out.println("Enemy Detected" );
+		}
+		
+		if(Explore == true)
+		{
+			if(sensor.getPosicao().getY() == 0)
+			{
+				MoveDown();
+			}
+			
+			if(sensor.getPosicao().getX() == 0)
+			{
+				MoveRight();
+			}
 		}
 	}
 	
