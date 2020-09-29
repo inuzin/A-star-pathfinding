@@ -12,18 +12,32 @@ public class Poupador extends ProgramaPoupador {
 	int direcao = 1;
 	int movimento = 0;
 	int round = 0;
+	int runfromenemy = 0;
+	Boolean Explore = false;
 	Boolean FoundCoin = false;
+	Boolean FoundBanco = false;
 	Boolean RunningAway = false;
 	Boolean Stuck = false;
 	int[][] map = new int[6][6];
+	int[][] world = new int[50][50];
 	int tile = 0;
 	Stack<Node> Path = new Stack<Node>();
 	
 	
 	public int acao() {		
 			
-		
-		System.out.println("#------------------------------------------------------------------#");								
+		System.out.println("#------------------------------------------------------------------#");
+		System.out.println("World map");
+		for(int y = 0; y <= 30; y++)
+		{
+			for(int x = 0; x <= 30; x++)
+			{
+				System.out.print("" + world[x][y] + ",");
+			}
+			System.out.println("");
+		}
+		System.out.println("#------------------------------------------------------------------#");
+		System.out.println("Bird view");
 		Scan();						
 		for(int y = 0; y <= 4; y++)
 		{
@@ -65,6 +79,90 @@ public class Poupador extends ProgramaPoupador {
 		int counter = 0;
 		FoundCoin = false;
 		RunningAway = false;
+		Explore = false;
+		FoundBanco = false;
+		
+		for(int y = 0; y <= 30; y++)
+		{
+			for(int x = 0; x <= 30; x++)
+			{
+				//world[x][y] = 0;
+				/*
+				world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY()] = 1;
+				
+				if(RunningAway == false)
+				{
+					if(FoundCoin == false)
+					{
+						if(map[x][y] == 1)
+						{
+							Explore = true;
+							Node start = new Node(2,2);
+							Node end = new Node(Math.abs(x - 4),Math.abs(y - 4));
+							System.out.println("OI");
+							if(map[Math.abs(x - 4)][Math.abs(y - 4)] != 1)
+							{
+							end = new Node(Math.abs(x - 4),Math.abs(y - 4));
+							}
+							else if(map[Math.abs(x - 4)][y] != 1)
+							{
+							end = new Node(Math.abs(x - 4),Math.abs(y));	
+							}
+							else if(map[x][Math.abs(y - 4)] != 1)
+							{
+							end = new Node(Math.abs(x),Math.abs(y - 4));	
+							}
+							
+							System.out.println("O PROBLEMA E O CALCULO?");
+							Astar(start, end, map);
+							System.out.println("O PROBLEMA E O NODE FINAL?");
+							MovePoupador(Path.lastElement());
+						}	
+					}
+				}
+				
+				//movimento = (int)(Math.random() * 5);
+				*/
+				/*
+				if((int)sensor.getPosicao().getX() != 29 && (int)sensor.getPosicao().getY() != 29)
+				{
+					if((int)sensor.getPosicao().getX() != 0 &&(int)sensor.getPosicao().getY() != 0)
+					{
+				if(world[(int)sensor.getPosicao().getX() - 1][(int)sensor.getPosicao().getY()] != 1)
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+				else if(world[(int)sensor.getPosicao().getX() + 1][(int)sensor.getPosicao().getY()] != 1)
+				{
+					movimento = (int)(Math.random() * 4);
+				}
+				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() + 1] != 1)
+				{
+					movimento = (int)(Math.random() * 3);
+				}
+				else if(world[(int)sensor.getPosicao().getX()][(int)sensor.getPosicao().getY() - 1] != 1)
+				{
+					movimento = (int)(Math.random() * 2);	
+				}
+				else
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+					}
+					else
+					{
+						movimento = (int)(Math.random() * 5);	
+					}
+				}
+				else
+				{
+					movimento = (int)(Math.random() * 5);	
+				}
+				*/
+				
+			}
+		}
+			
 		
 		for(int y = 0; y <= 4; y++)
 		{
@@ -85,34 +183,57 @@ public class Poupador extends ProgramaPoupador {
 					map[x][y] = 6;
 					counter += 1;
 				}
+																
+				if(map[x][y] == 3)
+				{
+					
+					
+					if(sensor.getNumeroDeMoedas() >= 10)
+					{
+					FoundBanco = true;	
+					Node start = new Node(2,2);
+					Node end = new Node(x,y);	
+					
+					Astar(start, end, map);
+					
+					MovePoupador(Path.lastElement());
+					}
+				}
 				
+				if(FoundBanco == false)
+				{
 				if(map[x][y] == 200 || map[x][y] == 210 || map[x][y] == 220 || map[x][y] == 230)
 				{
 					RunningAway = true;
 					Node start = new Node(2,2);
 					Node end = new Node(Math.abs(x - 4),Math.abs(y - 4));
-					System.out.println("OI");
-					if(map[Math.abs(x - 4)][Math.abs(y - 4)] != 1)
+					
+					if(map[Math.abs(x - 4)][Math.abs(y - 4)] != 1 && map[Math.abs(x - 4)][Math.abs(y - 4)] != -2 && map[Math.abs(x - 4)][Math.abs(y - 4)] != 5)
 					{
 					end = new Node(Math.abs(x - 4),Math.abs(y - 4));
 					}
-					else if(map[Math.abs(x - 4)][y] != 1)
+					else if(map[Math.abs(x - 4)][y] != 1 && map[Math.abs(x - 4)][y] != -2 && map[Math.abs(x - 4)][y] != 5)
 					{
 					end = new Node(Math.abs(x - 4),Math.abs(y));	
 					}
-					else if(map[x][Math.abs(y - 4)] != 1)
+					else if(map[x][Math.abs(y - 4)] != 1 && map[Math.abs(x - 4)][y] != -2 && map[Math.abs(x - 4)][y] != 5)
 					{
 					end = new Node(Math.abs(x),Math.abs(y - 4));	
 					}
+					else
+					{
+						movimento = (int)(Math.random() * 5);	
+					}
 					
-					System.out.println("O PROBLEMA E O CALCULO?");
 					Astar(start, end, map);
-					System.out.println("O PROBLEMA E O NODE FINAL?");
 					MovePoupador(Path.lastElement());
+				}
 				}
 				
 				if(RunningAway == false)
 				{
+					if(FoundBanco == false)
+					{
 				if(map[x][y] == 4)
 				{
 					FoundCoin = true;
@@ -128,14 +249,25 @@ public class Poupador extends ProgramaPoupador {
 					
 					MovePoupador(Path.lastElement());			
 				}
+					}
 				}
+				
+				
+				
+				
 			}
 		}
 		
 		
 		if(FoundCoin == false)
 		{
+			if(Explore == false)
+			{
+				if(FoundBanco == false)
+				{
 		movimento = (int)(Math.random() * 5);
+				}
+			}
 		}
 		
 		if(RunningAway == true)
@@ -367,7 +499,7 @@ public class Poupador extends ProgramaPoupador {
         //Falta saber o motivo do programa crashar quando considera pastilha do poder e parede como vizinhos nao possiveis.
 		if(!(n.x == 0))
 		{
-        if(map[n.x - 1][n.y] != 1)
+        if(map[n.x - 1][n.y] != 1 && map[n.x - 1][n.y] != 5)
         { 
         	
         	
@@ -379,7 +511,7 @@ public class Poupador extends ProgramaPoupador {
 		
 		if(!(n.y == 0))
 		{
-        if (map[n.x][n.y - 1] != 1)
+        if (map[n.x][n.y - 1] != 1 && map[n.x][n.y - 1] != 5)
         {
         	
         //System.out.println("Node(" + n.x + "," + (n.y - 1) + ") adicionado para a lista de vizinhos.");	
@@ -390,7 +522,7 @@ public class Poupador extends ProgramaPoupador {
 		
 		if(!(n.x == 5))
 		{
-        if (map[n.x + 1][n.y] != 1)
+        if (map[n.x + 1][n.y] != 1 && map[n.x + 1][n.y] != 5)
         {
         	
         //System.out.println("Node(" + (n.x + 1) + "," + n.y + ") adicionado para a lista de vizinhos.");	
@@ -401,7 +533,7 @@ public class Poupador extends ProgramaPoupador {
 		
 		if(!(n.y == 5))
 		{
-        if (map[n.x][n.y + 1] != 1)
+        if (map[n.x][n.y + 1] != 1 && map[n.x][n.y + 1] != 5)
         {
         	
         //System.out.println("Node(" + n.x + "," + (n.y + 1) + ") adicionado para a lista de vizinhos.");	
